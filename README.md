@@ -1,2 +1,2 @@
 # Waldplanungsassistent
-Waldplanungsassistent is an interactive tool to help forest planners make informed decisions on reforestation and forest management. 
+<b>Waldplanungsassistent</b> is an interactive tool that aids forest planners in making well-informed decisions on reforestation and forest management. It gathers input from users through questions on forest conditions, tree species preferences, natural regeneration, wildlife, and funding. The tool then provides a tailored summary with recommendations, exportable as a PDF. It supports multiple-choice inputs, validates user responses, and incorporates forestry guidelines like WET (Waldentwicklungstypen) for sustainable forest development.
