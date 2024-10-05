@@ -36,7 +36,7 @@ const questions = [
         type: "text" // Free text input
     },
     {
-        question: "Gibt es auf Ihrer Fläche Reh- oder Rotwild? (Sie können mehrere Optionen auswählen und fortfahren, indem Sie fertig sind, indem Sie auf die Schaltfläche „Nächste“ klicken.)",
+        question: "Gibt es auf Ihrer Fläche Reh- oder Rotwild? (Sie können mehrere Optionen auswählen und fortfahren, indem Sie auf die Schaltfläche „Nächste“ klicken.)",
         options: ["Rehwild", "Rotwild", "Niederwild"],
         type: "multiple" // Multiple choice
     },
@@ -47,13 +47,13 @@ const questions = [
     },
     {
         question: "Bitte gehen Sie auf die Webseite Waldinfo.NRW und nutzen Sie das „Unterstützungssystem Wiederbewaldung“, um zu erfahren, welche Waldentwicklungstypen für Ihre Fläche geeignet sind. \nHierbei geht es nicht darum, unbedingt Förderung für die Pflanzung eines bestimmten WETs zu beantragen, noch die spezifische Zusammensetzung und Baumanteile eines WET genau einzuhalten. Die WETs beinhalten jeweils einen Katalog an Haupt- und Nebenbaumarten, aber auch eine große Vielzahl an möglichen Begleitbaumarten, und ermöglichen so einen großen Gestaltungsspielraum für Ihren Wald. Sie bieten somit Orientierung bezüglich der Möglichkeiten auf einer bestimmten Fläche. \nWelche WET werden Ihnen für die Zielfläche von Waldinfo.NRW vorgeschlagen?",
-        options: ["12", "92", "20", "14", "21", "27", "28", "29", "42", "62", "68", "69", "82", "96", "98"],
-        type: "multiple" 
+        //options: ["12", "92", "20", "14", "21", "27", "28", "29", "42", "62", "68", "69", "82", "96", "98"],
+        type: "text" 
     },
     {
         question: "Weitere empfohlene Waldentwicklungstypen:",
-        options: ["12", "92", "20", "14", "21", "27", "28", "29", "42", "62", "68", "69", "82", "96", "98"],
-        type: "multiple"
+        //options: ["12", "92", "20", "14", "21", "27", "28", "29", "42", "62", "68", "69", "82", "96", "98"],
+        type: "text"
     }
 ];
 
@@ -104,50 +104,6 @@ function showNextButton() {
     };
     chatBox.appendChild(nextButton);
 }
-
-
-// Function to ask the next question
-function askNextQuestion() {
-    if (currentQuestionIndex < questions.length) {
-        const currentQuestion = questions[currentQuestionIndex];
-        const questionElement = document.createElement('div');
-        questionElement.className = 'msg';
-        questionElement.textContent = currentQuestion.question;
-
-        // If options are provided
-        if (currentQuestion.options) {
-            const optionsContainer = document.createElement('div');
-            optionsContainer.className = 'options-container';
-            currentQuestion.options.forEach(option => {
-                const optionButton = document.createElement('button');
-                optionButton.className = 'opt';
-                optionButton.textContent = option;
-                optionButton.onclick = () => {
-                    addMessageToChat(option, 'user');
-                    processResponse(option); // Process response when option is selected
-                };
-                optionsContainer.appendChild(optionButton);
-            });
-            questionElement.appendChild(optionsContainer);
-        } else {
-            // For text inputs
-            const textInput = document.createElement('input');
-            textInput.type = 'text';
-            textInput.placeholder = 'Geben Sie hier Ihre Antwort ein..';
-            textInput.onkeypress = (event) => {
-                if (event.key === 'Enter') {
-                    addMessageToChat(textInput.value, 'user');
-                    processResponse(textInput.value);
-                }
-            };
-            questionElement.appendChild(textInput);
-        }
-
-        chatBox.appendChild(questionElement);
-        chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
-    }
-}
-
 
 // Function to generate PDF with the selected responses
 function generatePDF() {
@@ -211,17 +167,26 @@ function generatePDF() {
     y = addTextWithWrapping(ecologicalSummary, false, true);
     y += 10; 
 
-    // Tree Species and Wildlife Preferences
-    y = addTextWithWrapping("3. Baumarten und Wildtierpräferenzen", true);
+    // Tree Species
+    y = addTextWithWrapping("3. Baumarten", true);
     y = addTextWithWrapping(`Arten natürlicher Entstehung: ${responses[4]}`); // Response for Species to Plant
     y = addTextWithWrapping(`Obligatorische Arten: ${responses[5]}`); // Response for Unwanted Species
     y = addTextWithWrapping(`Unerwünschte Arten: ${responses[6]}`); // Response for Wildlife
     
+
+    const treesSummary = 
+        "Bei der Bewertung werden die Baumarten untersucht, die sich in dem Gebiet natürlich regenerieren, sowie die Arten, die angepflanzt werden sollen und jene, die vermieden werden sollten. Diese Informationen sind entscheidend für die Erstellung eines umfassenden Waldbewirtschaftungsplans, der mit den Zielen der Artenvielfalt, der Gesundheit des Ökosystems und spezifischen forstwirtschaftlichen Zielen in Einklang steht.";
+    
+    y = addTextWithWrapping(treesSummary, false, true);
+    y += 10; 
+
+    // Wildlife Preferences
+    y = addTextWithWrapping("4. Wildtiervorkommen", true);
     const selectedWETs3 = Array.isArray(responses[7]) ? responses[7].join(", ") : responses[7]; // Join selected WETs with commas
     y = addTextWithWrapping(`Wildtiere vor Ort: ${selectedWETs3}`);
     
     const speciesSummary = 
-        "Bei der Bewertung werden die Baumarten untersucht, die sich in dem Gebiet natürlich regenerieren, sowie die Arten, die angepflanzt werden sollen und jene, die vermieden werden sollten. Darüber hinaus wird das Vorkommen von Rehen oder anderen Wildtieren berücksichtigt, das die Waldbewirtschaftungsstrategien beeinflussen kann. Diese Informationen sind entscheidend für die Erstellung eines umfassenden Waldbewirtschaftungsplans, der mit den Zielen der Artenvielfalt, der Gesundheit des Ökosystems und spezifischen forstwirtschaftlichen Zielen in Einklang steht.";
+        "Darüber hinaus wird das Vorkommen von Rehen oder anderen Wildtieren berücksichtigt, das die Waldbewirtschaftungsstrategien beeinflussen kann. Diese Informationen tragen dazu bei, einen Waldbewirtschaftungsplan zu erstellen, der den Einfluss von Wildtieren berücksichtigt und die Balance zwischen Artenvielfalt und nachhaltiger Forstwirtschaft wahrt.";
     
     y = addTextWithWrapping(speciesSummary, false, true);
     y += 10; 
@@ -239,14 +204,12 @@ function generatePDF() {
     // Suitable Forest Development Types (WET)
     y = addTextWithWrapping("5. Nachhaltige Waldentwicklungstypen (WET)", true);
 
-    // Display the selected WETs (from the last question)
+    // Display the selected WETs 
     y = addTextWithWrapping("Besonders empfohlene Waldentwicklungstypen:", true);
-    const selectedWETs1 = Array.isArray(responses[9]) ? responses[9].join(", ") : responses[9]; // Join selected WETs with commas
-    y = addTextWithWrapping(`WET Type: ${selectedWETs1}`);
+    y = addTextWithWrapping(`WET Type: ${responses[9]}`);
 
     y = addTextWithWrapping("Weitere empfohlene Waldentwicklungstypen:", true);
-    const selectedWETs2 = Array.isArray(responses[10]) ? responses[10].join(", ") : responses[10]; // Join selected WETs with commas
-    y = addTextWithWrapping(`WET Type: ${selectedWETs2}`);
+    y = addTextWithWrapping(`WET Type: ${responses[10]}`);
 
     // Custom summary for WET selection
     const WETSelectionSummary = 
@@ -256,12 +219,10 @@ function generatePDF() {
     y += 10; 
 
     // Save the PDF
-    doc.save('forest_planning_responses.pdf');
+    doc.save('Waldplanungsassistent - Antworten');
 }
 
-
-
-//  Function to process user response and move to the next question
+// Function to process user response and move to the next question
 function processResponse(userMessage) {
     if (currentQuestionIndex < questions.length) {
         const currentQuestion = questions[currentQuestionIndex];
@@ -269,8 +230,14 @@ function processResponse(userMessage) {
         // Only move to the next question for single and text types
         if (currentQuestion.type === "single" || currentQuestion.type === "text") {
             responses.push(userMessage);
-            currentQuestionIndex++;
-            askNextQuestion();
+
+            // Check if it's the last question
+            if (currentQuestionIndex === questions.length - 1) {
+                finishChat(); // Show danke message and print button after the last question
+            } else {
+                currentQuestionIndex++;
+                askNextQuestion();
+            }
         } else if (currentQuestion.type === "multiple") {
             // Initialize the response array if it doesn't exist
             if (!responses[currentQuestionIndex]) {
@@ -286,13 +253,52 @@ function processResponse(userMessage) {
             // Show next button after selecting options
             showNextButton();
         }
-        else{
-            finishChat();
-        }
     } 
-    
-    
 }
+
+// Function to ask the next question
+function askNextQuestion() {
+    if (currentQuestionIndex < questions.length) {
+        const currentQuestion = questions[currentQuestionIndex];
+        const questionElement = document.createElement('div');
+        questionElement.className = 'msg';
+        questionElement.textContent = currentQuestion.question;
+
+        // If options are provided
+        if (currentQuestion.options) {
+            const optionsContainer = document.createElement('div');
+            optionsContainer.className = 'options-container';
+            currentQuestion.options.forEach(option => {
+                const optionButton = document.createElement('button');
+                optionButton.className = 'opt';
+                optionButton.textContent = option;
+                optionButton.onclick = () => {
+                    addMessageToChat(option, 'user');
+                    processResponse(option); // Process response when option is selected
+                };
+                optionsContainer.appendChild(optionButton);
+            });
+            questionElement.appendChild(optionsContainer);
+        } else {
+            // For text inputs
+            const textInput = document.createElement('input');
+            textInput.type = 'text';
+            textInput.placeholder = 'Geben Sie hier Ihre Antwort ein..';
+            textInput.onkeypress = (event) => {
+                if (event.key === 'Enter') {
+                    addMessageToChat(textInput.value, 'user');
+                    processResponse(textInput.value);
+                }
+            };
+            questionElement.appendChild(textInput);
+        }
+
+        chatBox.appendChild(questionElement);
+        chatBox.scrollTop = chatBox.scrollHeight; // Scroll to the bottom
+    }
+}
+
+
 
 // Function to finish the chat and show responses
 function finishChat() {

@@ -10,18 +10,6 @@ body{
     background-attachment: fixed;
     background-position: center center;
 }
-
-#init{
-    margin-top: 2rem;
-    background: #826945;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 20px;
-    font-size: 12px;
-    font-weight: 500;
-    color: white;;
-    cursor: pointer;
-}
 .desc p{
     color: #fff595;;
     margin: 0;
